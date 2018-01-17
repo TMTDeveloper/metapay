@@ -7,8 +7,8 @@
   </ion-navbar>
 </ion-header>
 
-<ion-content padding>
-  <ion-segment>
+<ion-content>
+  <!-- <ion-segment>
     <div class="butcol">
       <button ion-button clear class="colbut" (click)="showPrompt('saldo')">
         SALDO
@@ -24,9 +24,55 @@
         QR CODE
       </button>
     </div>
+  </ion-segment> -->
+  <ion-segment [(ngModel)]="taskType">
+    <ion-segment-button value="generate">
+      Generate QR
+    </ion-segment-button>
+    <ion-segment-button value="scan">
+      Scan QR
+    </ion-segment-button>
   </ion-segment>
+  <div *ngIf="taskType=='generate'" >
+      <ion-list>
+           <ion-item>
+             <ion-label>Jumlah Transaksi</ion-label>
+             <ion-input type="text" name="amount" [(ngModel)]="selectedamountstr" (change)="isnan($event.target.value)?$event.target.value='':onChangePrice($event.target.value)" (keyup)="isnan($event.target.value)?$event.target.value='':onPriceUp($event.target.value)" (focus)="($event.target.value='')"></ion-input>
+           </ion-item>
+     
+           <ion-item>
+            <ion-label stacked>Keterangan</ion-label>
+            <ion-textarea type="text" rows="3" maxLength="500" [(ngModel)]="keterangan" name="note" textarea></ion-textarea>
+          </ion-item>
+     
+           <div padding>
+             <button ion-button color="primary" block (click)="checkForm();">SUBMIT</button>
+           </div>
+     
+         </ion-list>
+  </div>
 
-  <ion-slides pager='true' loop='true' autoplay='10000' style="max-height:40%">
+  <div *ngIf="taskType=='scan'">
+
+    <ion-segment  style="margin: 0;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);">
+  
+      <button (click)="scanQR()" style="height:200px; width:200px; border-radius:100px; font-size:25px; border-style:solid;"ion-button outline round icon-start>
+          <ion-icon  name="qr-scanner">
+            </ion-icon>
+          Scan QR
+      </button>
+
+
+    </ion-segment>
+
+
+  </div>
+
+  <!-- <ion-slides pager='true' loop='true' autoplay='10000' style="max-height:40%">
     <ion-slide>
       <img src="assets/img/slide1.jpg" style=" height: auto; margin-left: auto; margin-right: auto;">
     </ion-slide>
@@ -61,7 +107,7 @@
       <img src="assets/img/report.png" class="imgbutton">
 
     </div>
-  </div>
+  </div> -->
 
 
 </ion-content>

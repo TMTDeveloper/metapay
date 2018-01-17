@@ -5,7 +5,9 @@ import {
   NavController,
   AlertController,
   LoadingController,
-  ModalController
+  ModalController,
+  NavParams,
+  ViewController,
 } from 'ionic-angular';
 import {
   DecimalPipe
@@ -22,8 +24,6 @@ import {
 } from '@ionic-native/barcode-scanner';
 import moment from 'moment';
 
-import {SaldomodalPage
-} from '../saldomodal/saldomodal';
 
 @Component({
   selector: 'page-home',
@@ -37,46 +37,20 @@ export class HomePage {
   results: any;
 
 
-agenCheck(){
-  if(this.auth.authInfo.agenmode==false){
-    this.showalert("Aktifkan Mode Agen di Menu Setting", "Notification")
-  }else if(this.auth.authInfo.agenmode==true){
-    this.showPrompt('scan');
-  }
-}
 
-  async scanBarcode() {
-    this.results = null
-    this.results = await this.barcode.scan();
-    if (this.results !== null) {
-      this.QRscan();
-    }
-  }
-  scanSync() {
-    this.barcode.scan().then((barcodeData) => {
-      this.results = null
-      this.results = barcodeData;
-      if (barcodeData.text.length >0) {
-        this.QRscan();
-      }
-      console.log(typeof this.results);
-    }, (err) => {
-      console.log(err)
-    });
-  }
+
+
   showloading(msg ? ) {
     this.loading = this.loadingCtrl.create({
       spinner: 'dots',
       content: 'Please Wait...'
     });
   }
-  getCurrency(amount: any) {
-    return this.decimalPipe.transform(amount, '3.2-5');
-  }
+
   showalert(msg, title) {
     let alert = this.alertctrl.create({
       title: title,
-      subTitle:msg,
+      subTitle: msg,
       buttons: [{
         text: 'Ok',
         role: 'ok',
@@ -89,8 +63,6 @@ agenCheck(){
 
   }
 
-
-  
   showPrompt(tran) {
     let prompt = this.alertctrl.create({
       title: 'PIN',
@@ -106,7 +78,7 @@ agenCheck(){
           text: 'Confirm',
           handler: data => {
             this.pin = data.PIN;
-            this.saldoModal(tran);
+            this.scanSync();
           }
         },
         {
@@ -118,159 +90,177 @@ agenCheck(){
     });
     prompt.present();
   }
+
   constructor(public navCtrl: NavController, public alertctrl: AlertController, private decimalPipe: DecimalPipe, public httpreq: HttpReqProvider, public auth: AuthSingletonProvider, public loadingCtrl: LoadingController, private barcode: BarcodeScanner, public modalCtrl: ModalController) {
     this.authInfo = this.auth.authInfo;
   }
 
-  gotoPage(page) {
-    this.navCtrl.push(page);
-  }
-
-  QRscan() {
-    let date = moment().format('YYYY:MM:DD');
-    let time = moment().format('HH:mm:ss');
-
-    var params = {
-      xaccountnumber: this.results.text.accountno,
-      xtoken: this.authInfo.token,
-      xlocation: this.authInfo.longlat,
-      xaction: 'trnagen',
-      xtrnnumber: this.results.text.trnnumber,
-      xaccountnumberagen: this.authInfo.accountno,
-      xdate: date,
-      xtime: time,
-      xusername: this.authInfo.username
-    }
-
-    var query = "";
-    for (let key in params) {
-      query += encodeURIComponent(key) + "=" + encodeURIComponent(params[key]) + "&";
-    }
-    this.showloading();
-    this.loading.present();
-    this.httpreq.postreq("setrnnasabah?", query)
-      .subscribe((response) => {
-          console.log(response);
-          if (response.STATUS == "OK") {
-            this.loading.dismiss();
-            this.showalert(response.MESSAGE, 'Notification');
 
 
-          } else if (response.STATUS != "OK") {
-            this.loading.dismiss();
-            this.showalert(response.MESSAGE, 'Notification');
-            console.log(response)
-          }
-        }, (error) => {
-          this.loading.dismiss();
-
-          this.showalert("KONEKSI BERMASALAH, HARAP ULANGI BEBERAPA SAAT LAGI", 'Notification');
-        }
-
-      )
-  }
 
 
-  saldoCheck() {
-    var params = {
-      xaccountnumber: this.authInfo.accountno,
-      xpin: this.pin,
-      xtoken: this.authInfo.token,
-      xlocation: this.authInfo.longlat,
-      xusername: this.authInfo.username
+  showalertsubmit(msg) {
+    let alert = this.alertctrl.create({
+      title: 'NOTIFICATION',
+      subTitle: msg,
+      buttons: [{
+        text: 'Ok',
+        role: 'ok',
+        handler: () => {}
+      }]
+    });
 
-    }
-
-
-    var query = "";
-    for (let key in params) {
-      query += encodeURIComponent(key) + "=" + encodeURIComponent(params[key]) + "&";
-    }
-    this.showloading();
-    this.loading.present();
-    this.httpreq.getreq("sechecksaldo?" + query)
-      .subscribe((response) => {
-          console.log(response)
-          if (response.STATUS == "OK") {
-            this.loading.dismiss();
-            console.log(response.MESSAGE)
-            let title = response.MESSAGE
-            let saldo = response.SALDO
-            console.log(saldo.length);
-            if (saldo.length > 0) {
-              let saldodec = this.getCurrency(saldo)
-              this.showalert(saldodec, title); // the array is defined and has at least one element
-            } else {
-              this.showalert('0.00', title);
-            }
-
-          } else if (response.STATUS != "OK") {
-            this.loading.dismiss();
-            //  this.showalert(response.MESSAGE);
-            console.log(response)
-          }
-
-        }, (error) => {
-          this.loading.dismiss();
-
-          this.showalert("KONEKSI BERMASALAH, HARAP ULANGI BEBERAPA SAAT LAGI", 'Notification');
-        }
-
-      )
+    alert.present();
 
   }
 
-  
-  saldoModal(tran) {
-    var params = {
-      xaccountnumber: this.authInfo.accountno,
-      xpin: this.pin,
-      xtoken: this.authInfo.token,
-      xusername: this.authInfo.username,
-      xaction:"rekening"
-    }
 
 
-    var query = "";
-    for (let key in params) {
-      query += encodeURIComponent(key) + "=" + encodeURIComponent(params[key]) + "&";
-    }
-    this.showloading();
-    this.loading.present();
-    this.httpreq.postreq("serekening?" , query)
-      .subscribe((response) => {
-          console.log(response)
-          
-          if (response.STATUS == "OK") {
-            this.loading.dismiss();
-            
-            tran=="saldo"?this.openModal(response):this.scanSync();
+  //--------------------------------//
 
-          } else if (response.STATUS != "OK") {
-            this.loading.dismiss();
-            //  this.showalert(response.MESSAGE);
-            console.log(response)
-          }
+  taskType: string = "generate";
 
-        }, (error) => {
-          this.loading.dismiss();
+  selectedamount: any = 0;
+  selectedamountstr: string = '';
+  keterangan: string = '';
 
-          this.showalert("KONEKSI BERMASALAH, HARAP ULANGI BEBERAPA SAAT LAGI", 'Notification');
-        }
-
-      )
-
-  }
-
-  openModal(obj) {
-    let myModal = this.modalCtrl.create(SaldomodalPage,obj);
+  openModal() {
+    let myModal = this.modalCtrl.create(GenerateqrPage, {
+      data: {
+        selectedamount: this.selectedamount,
+        keterangan: this.keterangan,
+        accountnumberto: this.authInfo.accountno
+      }
+    });
     myModal.present();
   }
 
+  checkForm() {
+    if (this.selectedamount == 0) {
+      this.showalertsubmit("HARAP ISI JUMLAH TRANSAKSI");
+    } else if (this.selectedamount !== 0) {
+      this.openModal();
+    }
+  }
+
+
+  scanQR() {
+    this.showPrompt('scan');
+  }
+
+  scanSync() {
+    this.barcode.scan({
+      resultDisplayDuration: 0
+    }).then((barcodeData) => {
+      this.results = null
+      this.results = JSON.parse(barcodeData.text);
+      if (barcodeData.text.length > 0) {
+
+
+        this.QRscanservice();
+      }
+
+    }, (err) => {
+
+    });
+  }
+
+  QRscanservice() {
+    var params = {
+      xtoken: this.authInfo.token,
+      xusername: this.authInfo.username,
+      xaccountnumber: this.authInfo.accountno,
+      xaccountnumberto: this.results.data.accountnumberto,
+      xnominal: this.results.data.selectedamount,
+      xketerangan: this.results.data.keterangan,
+      xtranfrom: 'M',
+      xlocation: this.authInfo.longlat,
+      xpin: this.pin
+    }
+
+    var query = "";
+    for (let key in params) {
+      query += encodeURIComponent(key) + "=" + encodeURIComponent(params[key]) + "&";
+    }
+
+    this.showloading();
+    this.loading.present();
+    this.httpreq.postreqmetapay("payment?", query)
+      .subscribe((response) => {
+
+          if (response.STATUS == "OK") {
+            this.loading.dismiss();
+            this.showalert("TRANSAKSI BERHASIL", 'Notification');
+
+
+          } else if (response.STATUS != "OK") {
+            this.loading.dismiss();
+            this.showalert(response.MESSAGE, 'Notification');
+
+          }
+        }, (error) => {
+          this.loading.dismiss();
+
+          this.showalert("KONEKSI BERMASALAH, HARAP ULANGI BEBERAPA SAAT LAGI", 'Notification');
+        }
+
+      )
+  }
+
+  getCurrency(amount: any) {
+    return this.decimalPipe.transform(amount, '1.2-2');
+  }
+
+
+  onChangePrice(evt) {
+    this.selectedamount = evt.split(",").join(" ");
+    this.selectedamount = this.selectedamount.split(".").join(" ");
+    this.selectedamount = this.selectedamount.replace(" ", "");
+    if (this.selectedamount != '') {
+      this.selectedamountstr = this.getCurrency(this.selectedamount)
+
+    }
+  }
+  onPriceUp(evt) {
+    this.selectedamount = evt.split(",").join(" ");
+    this.selectedamount = this.selectedamount.split(".").join(" ");
+    this.selectedamount = this.selectedamount.replace(" ", "");
+    this.selectedamountstr = this.selectedamount;
+  }
+  isnan(value) {
+    if (isNaN(value)) {
+      return true
+    } else {
+      return false
+    }
+  }
+
+
+
 }
 
-// Irwan Iglo, [20.08.17 14:13]
-// sechecksaldo
 
-// Irwan Iglo, [20.08.17 14:14]
-// prametter xaccountnumber,xpin,xusername,xtoken,xlocation
+
+@Component({
+  selector: 'page-qr',
+  templateUrl: 'generateqr.html'
+})
+export class GenerateqrPage {
+
+  data: any[];
+
+  constructor(public navCtrl: NavController, public navParams: NavParams, public viewCtrl: ViewController) {
+    this.data = this.navParams.get('data');
+  }
+  valueQr = (x) => {
+    let y = {
+      data: this.data
+    }
+
+    return JSON.stringify(y);
+  }
+  closeModal() {
+    this.viewCtrl.dismiss();
+  }
+
+}

@@ -66,30 +66,29 @@ export class LoginPage {
   }
 
   goLogin() {
-    this.navCtrl.push(TabsPage);
-    // console.log(this.longlat)
     
-    // this.showloading();
-    // this.loading.present();
-    // this.httpreq.postreq("selogin?","xusername="+this.userInfo.username +"&xpassword=" + this.userInfo.password + "&xlocation=" + this.longlat + "&xloginfrom=M")
-    //   .subscribe((response) => {
-    //       console.log(response)
-    //       if (response.STATUS == "OK") {
-    //         this.auth.setter(this.userInfo.username, response.TOKEN, this.longlat, response.ACCOUNT,this.lat,this.lng)
-    //         this.loading.dismiss();
-    //         this.navCtrl.push(TabsPage);
-    //         console.log(this.auth.authInfo);
-    //       } else {
-    //         this.loading.dismiss();
-    //         this.showalert(response.MESSAGE);
-    //       }
+    
+    this.showloading();
+    this.loading.present();
+    this.httpreq.postreq("selogin?","xusername="+this.userInfo.username +"&xpassword=" + this.userInfo.password + "&xlocation=" + this.longlat + "&xloginfrom=M")
+      .subscribe((response) => {
 
-    //     }, (error) => {
-    //       this.loading.dismiss();
-    //       this.showalert("KONEKSI BERMASALAH, HARAP ULANGI BEBERAPA SAAT LAGI");
-    //     }
+          if (response.STATUS == "OK") {
+            this.auth.setter(this.userInfo.username, response.TOKEN, this.longlat, response.ACCOUNT,this.lat,this.lng)
+            this.loading.dismiss();
+            this.navCtrl.push(TabsPage);
 
-    //   )
+          } else {
+            this.loading.dismiss();
+            this.showalert(response.MESSAGE);
+          }
+
+        }, (error) => {
+          this.loading.dismiss();
+          this.showalert("KONEKSI BERMASALAH, HARAP ULANGI BEBERAPA SAAT LAGI");
+        }
+
+      )
   }
 
 
@@ -101,7 +100,7 @@ getLocation(){
     // resp.coords.latitude
     // resp.coords.longitude
    }).catch((error) => {
-     console.log('Error getting location', error);
+
    });
 }
 

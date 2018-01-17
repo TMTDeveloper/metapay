@@ -24,6 +24,7 @@ export class HttpReqProvider {
   baseurlxpay:string='http://202.158.20.141:5001/xpayws/rest/'
  
   baseurl: string = 'http://202.158.20.141:5001/semetapro/api/'
+  baseurlmetapay: string = 'http://202.158.20.141:5001/semetapro/api/metapay/'
   constructor(public http: Http) {}
 
   getreq(url: string) {
@@ -47,6 +48,18 @@ export class HttpReqProvider {
     let obs = this.http.post(this.baseurl + url, body,options).map(res => res.json())
     return obs;
   };
+
+  postreqmetapay(url: string, body) {
+    let headers = new Headers();
+    headers.append('Content-Type', 'application/x-www-form-urlencoded');
+
+    let options = new RequestOptions({
+      headers: headers
+    });
+    let obs = this.http.post(this.baseurlmetapay + url, body,options).map(res => res.json())
+    return obs;
+  };
+
 
   postreqxpay(url: string, body) {
     let headers = new Headers();

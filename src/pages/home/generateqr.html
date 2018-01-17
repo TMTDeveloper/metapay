@@ -1,0 +1,34 @@
+<!--
+  Generated template for the SaldomodalPage page.
+
+  See http://ionicframework.com/docs/components/#navigation for more info on
+  Ionic pages and navigation.
+-->
+<ion-header>
+        <ion-navbar>
+                <ion-title>QR Code</ion-title>
+          <ion-buttons start>
+            <button ion-button (click)="closeModal('')">
+              <ion-icon name="md-close"></ion-icon>
+            </button>
+          </ion-buttons>
+        </ion-navbar>
+      </ion-header>
+      
+      
+      <ion-content>
+          <div>
+            <ion-segment style="margin: 0;
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);">
+                    <div style="padding-bottom: 10px;">
+                      <qr-code [value]="valueQr(data)" [size]="150"></qr-code>
+                    </div>
+                  </ion-segment>
+                </div>
+      
+      
+      </ion-content>
+      

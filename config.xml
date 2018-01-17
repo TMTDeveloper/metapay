@@ -2,7 +2,7 @@
 <widget id="id.metapay.co" version="0.0.2" xmlns="http://www.w3.org/ns/widgets" xmlns:cdv="http://cordova.apache.org/ns/1.0">
     <name>Metapay</name>
     <description>Metapay Mobile Payment</description>
-    <author email="zenhuwmank@gmail.com" href="http://x-pay.id/">Metapay Team</author>
+    <author email="zenhuwmank@gmail.com" href="http://metatech.id/">Metapay Team</author>
     <content src="index.html" />
     <access origin="*" />
     <allow-navigation href="http://ionic.local/*" />
@@ -26,24 +26,24 @@
     <preference name="ShowSplashScreenSpinner" value="false" />
     <platform name="android">
         <allow-intent href="market:*" />
-        <icon density="ldpi" src="resources/android/icon/YP72x72px.png" />
-        <icon density="mdpi" src="resources/android/icon/YP72x72px.png" />
-        <icon density="hdpi" src="resources/android/icon/YP72x72px.png" />
-        <icon density="xhdpi" src="resources/android/icon/YP72x72px.png" />
-        <icon density="xxhdpi" src="resources/android/icon/YP72x72px.png" />
-        <icon density="xxxhdpi" src="resources/android/icon/YP72x72px.png" />
-        <splash density="land-ldpi" src="resources/android/splash/META2.png" />
-        <splash density="land-mdpi" src="resources/android/splash/META2.png" />
-        <splash density="land-hdpi" src="resources/android/splash/META2.png" />
-        <splash density="land-xhdpi" src="resources/android/splash/META2.png" />
-        <splash density="land-xxhdpi" src="resources/android/splash/META2.png" />
-        <splash density="land-xxxhdpi" src="resources/android/splash/META2.png" />
-        <splash density="port-ldpi" src="resources/android/splash/ldpi_200x320px.png" />
-        <splash density="port-mdpi" src="resources/android/splash/mdpi_320x480px.png" />
-        <splash density="port-hdpi" src="resources/android/splash/hdpi_480x800px.png" />
-        <splash density="port-xhdpi" src="resources/android/splash/xhdpi_720px1280px.png" />
-        <splash density="port-xxhdpi" src="resources/android/splash/xxhdpi_960x1600px.png" />
-        <splash density="port-xxxhdpi" src="resources/android/splash/xxxhdpi_1280x1920px.png" />
+        <icon density="ldpi" src="resources/android/icon/drawable-ldpi-icon.png" />
+        <icon density="mdpi" src="resources/android/icon/drawable-mdpi-icon.png" />
+        <icon density="hdpi" src="resources/android/icon/drawable-hdpi-icon.png" />
+        <icon density="xhdpi" src="resources/android/icon/drawable-xhdpi-icon.png" />
+        <icon density="xxhdpi" src="resources/android/icon/drawable-xxhdpi-icon.png" />
+        <icon density="xxxhdpi" src="resources/android/icon/drawable-xxxhdpi-icon.png" />
+        <splash density="land-ldpi" src="resources/android/splash/drawable-land-ldpi-screen.png" />
+        <splash density="land-mdpi" src="resources/android/splash/drawable-land-mdpi-screen.png" />
+        <splash density="land-hdpi" src="resources/android/splash/drawable-land-hdpi-screen.png" />
+        <splash density="land-xhdpi" src="resources/android/splash/drawable-land-xhdpi-screen.png" />
+        <splash density="land-xxhdpi" src="resources/android/splash/drawable-land-xxhdpi-screen.png" />
+        <splash density="land-xxxhdpi" src="resources/android/splash/drawable-land-xxxhdpi-screen.png" />
+        <splash density="port-ldpi" src="resources/android/splash/drawable-port-ldpi-screen.png" />
+        <splash density="port-mdpi" src="resources/android/splash/drawable-port-mdpi-screen.png" />
+        <splash density="port-hdpi" src="resources/android/splash/drawable-port-hdpi-screen.png" />
+        <splash density="port-xhdpi" src="resources/android/splash/drawable-port-xhdpi-screen.png" />
+        <splash density="port-xxhdpi" src="resources/android/splash/drawable-port-xxhdpi-screen.png" />
+        <splash density="port-xxxhdpi" src="resources/android/splash/drawable-port-xxxhdpi-screen.png" />
     </platform>
     <platform name="ios">
         <allow-intent href="itms:*" />
@@ -81,17 +81,20 @@
     </platform>
     <allow-navigation href="http://192.168.1.8:8101" />
     <allow-navigation href="http://192.168.1.8:8100" />
-    <engine name="android" spec="6.4.0" />
+    <allow-navigation href="http://192.168.137.1:8103" />
+    <allow-navigation href="http://192.168.1.7:8101" />
+    <engine name="android" spec="^7.0.0" />
     <engine name="browser" spec="^4.1.0" />
+    <plugin name="cordova-plugin-compat" spec="^1.2.0" />
     <plugin name="cordova-plugin-console" spec="^1.1.0" />
+    <plugin name="cordova-plugin-datepicker" spec="^0.9.3" />
     <plugin name="cordova-plugin-device" spec="^1.1.7" />
+    <plugin name="cordova-plugin-geolocation" spec="^2.4.3">
+        <variable name="GEOLOCATION_USAGE_DESCRIPTION" value="To locate you" />
+    </plugin>
     <plugin name="cordova-plugin-splashscreen" spec="^4.1.0" />
     <plugin name="cordova-plugin-statusbar" spec="^2.4.0" />
     <plugin name="cordova-plugin-whitelist" spec="^1.3.3" />
     <plugin name="ionic-plugin-keyboard" spec="^2.2.1" />
     <plugin name="phonegap-plugin-barcodescanner" spec="^6.0.8" />
-    <plugin name="cordova-plugin-datepicker" spec="^0.9.3" />
-    <plugin name="cordova-plugin-geolocation" spec="^2.4.3">
-        <variable name="GEOLOCATION_USAGE_DESCRIPTION" value="To locate you" />
-    </plugin>
 </widget>
